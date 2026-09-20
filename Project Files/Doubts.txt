@@ -1,0 +1,2 @@
+In watch_history_df, there are some entries which does not follow the condition for completion_pct, do we need to remove those rows.
+In titles.csv do we have to remove the rows where popularity score is not between 0-1.
