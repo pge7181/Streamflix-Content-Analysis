@@ -1,3 +1,4 @@
 In watch_history_df, there are some entries which does not follow the condition for completion_pct, do we need to remove those rows.
 In titles.csv do we have to remove the rows where popularity score is not between 0-1.
 In subscribers.csv what do we need to with the entries which are for short tenure and marked active.
+In titles.csv what does it mean if the license_expiry is NaT.
