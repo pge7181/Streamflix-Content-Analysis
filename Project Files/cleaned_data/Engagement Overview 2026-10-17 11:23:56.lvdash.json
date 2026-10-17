@@ -1,0 +1,1958 @@
+{
+  "datasets": [
+    {
+      "name": "1cf54bc6",
+      "displayName": "ratings",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.ratings",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "de29e9f9",
+      "displayName": "reviews",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.reviews",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "1585467c",
+      "displayName": "subscribers",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.subscribers",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "churn_rate",
+            "expr": "SUM(CASE WHEN NOT is_active THEN 1 ELSE 0 END) * 1.0 / COUNT(*)",
+            "displayName": "Churn Rate",
+            "format": {
+              "type": "percentage",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 1.0
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "03dc0e15",
+      "displayName": "titles",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.titles",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "watch_hours_per_1k_spend",
+            "expr": "SUM(total_watch_hours) * 1000.0 / NULLIF(SUM(license_cost_usd), 0)",
+            "displayName": "Watch Hours per $1K Spend",
+            "format": {
+              "type": "number",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 1.0
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "8573cdbb",
+      "displayName": "watch_history",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.watch_history",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "total_watch_hours",
+            "expr": "SUM(watch_duration_min) / 60.0",
+            "displayName": "Total Watch Hours"
+          },
+          {
+            "name": "avg_completion_pct",
+            "expr": "AVG(completion_pct)",
+            "displayName": "Avg Completion %"
+          }
+        ]
+      }
+    },
+    {
+      "name": "297966ed",
+      "displayName": "watchlist",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.watchlist",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    }
+  ],
+  "relationshipGraphs": [
+    {
+      "sources": [
+        {
+          "name": "ratings",
+          "datasetName": "1cf54bc6"
+        },
+        {
+          "name": "reviews",
+          "datasetName": "de29e9f9"
+        },
+        {
+          "name": "subscribers",
+          "datasetName": "1585467c"
+        },
+        {
+          "name": "titles",
+          "datasetName": "03dc0e15"
+        },
+        {
+          "name": "watch_history",
+          "datasetName": "8573cdbb"
+        },
+        {
+          "name": "watchlist",
+          "datasetName": "297966ed"
+        }
+      ],
+      "relationships": [
+        {
+          "name": "watch_history_subscribers",
+          "from": "watch_history",
+          "to": "subscribers",
+          "on": "`watch_history`.`subscriber_id` = `subscribers`.`subscriber_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "watch_history_titles",
+          "from": "watch_history",
+          "to": "titles",
+          "on": "`watch_history`.`title_id` = `titles`.`title_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "ratings_subscribers",
+          "from": "ratings",
+          "to": "subscribers",
+          "on": "`ratings`.`subscriber_id` = `subscribers`.`subscriber_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "ratings_titles",
+          "from": "ratings",
+          "to": "titles",
+          "on": "`ratings`.`title_id` = `titles`.`title_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "reviews_subscribers",
+          "from": "reviews",
+          "to": "subscribers",
+          "on": "`reviews`.`subscriber_id` = `subscribers`.`subscriber_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "reviews_titles",
+          "from": "reviews",
+          "to": "titles",
+          "on": "`reviews`.`title_id` = `titles`.`title_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "watchlist_subscribers",
+          "from": "watchlist",
+          "to": "subscribers",
+          "on": "`watchlist`.`subscriber_id` = `subscribers`.`subscriber_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "watchlist_titles",
+          "from": "watchlist",
+          "to": "titles",
+          "on": "`watchlist`.`title_id` = `titles`.`title_id`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "6ebb447b",
+      "displayName": "Engagement Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "total_subscribers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(subscribers__count)",
+                      "expression": "MEASURE(`subscribers`.`count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total Subscribers"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(subscribers__count)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "completion_rate",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(watch_history__avg_completion_pct)",
+                      "expression": "MEASURE(`watch_history`.`avg_completion_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Completion Rate"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(watch_history__avg_completion_pct)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "churn_rate",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(subscribers__churn_rate)",
+                      "expression": "MEASURE(`subscribers`.`churn_rate`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Churn Rate"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(subscribers__churn_rate)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "monthly_watch_hours",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "monthly(watch_history__watch_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `watch_history`.`watch_date`)"
+                    },
+                    {
+                      "name": "measure(watch_history__total_watch_hours)",
+                      "expression": "MEASURE(`watch_history`.`total_watch_hours`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Monthly Watch Hours Trend"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(watch_history__watch_date)",
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(watch_history__total_watch_hours)",
+                  "displayName": "total_watch_hours",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 12,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "region_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_region",
+                "query": {
+                  "datasetName": "1585467c",
+                  "fields": [
+                    {
+                      "name": "region",
+                      "expression": "`region`"
+                    },
+                    {
+                      "name": "region_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Region"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "region",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_region"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "key_insights",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Key Insights\n",
+                "\n",
+                "**Engagement is accelerating rapidly.** Monthly watch hours grew from ~10.7K in Jan 2024 to over 1M by May 2026 — a nearly 100x increase, signaling strong adoption and rising per-user consumption.\n",
+                "\n",
+                "**Retention needs attention.** A 26.2% churn rate means roughly 1 in 4 subscribers are inactive. With an average completion rate of 65%, there is clear room to improve content stickiness and reduce early drop-off."
+              ]
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 12,
+            "width": 8,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "page_title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Engagement Overview"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "3139c5c5",
+      "displayName": "Content Performance",
+      "layout": [
+        {
+          "widget": {
+            "name": "watch_hours_by_genre",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "titles__primary_genre",
+                      "expression": "`titles`.`primary_genre`"
+                    },
+                    {
+                      "name": "measure(watch_history__total_watch_hours)",
+                      "expression": "MEASURE(`watch_history`.`total_watch_hours`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "MEASURE(`watch_history`.`total_watch_hours`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Watch Hours by Genre",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "titles__primary_genre",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure-reversed",
+                      "measure": {
+                        "fieldName": "measure(watch_history__total_watch_hours)"
+                      }
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(watch_history__total_watch_hours)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 12,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "genre_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_primary_genre",
+                "query": {
+                  "datasetName": "03dc0e15",
+                  "fields": [
+                    {
+                      "name": "primary_genre",
+                      "expression": "`primary_genre`"
+                    },
+                    {
+                      "name": "primary_genre_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Genre"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "primary_genre",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_primary_genre"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "top_10_titles",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(watch_history__total_watch_hours)",
+                      "expression": "MEASURE(`watch_history`.`total_watch_hours`)"
+                    },
+                    {
+                      "name": "titles__title_name",
+                      "expression": "`titles`.`title_name`"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "MEASURE(`watch_history`.`total_watch_hours`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Top 10 Titles by Watch Hours",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "measure(watch_history__total_watch_hours)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "titles__title_name",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 10
+                    },
+                    "sort": {
+                      "by": "measure-reversed",
+                      "measure": {
+                        "fieldName": "measure(watch_history__total_watch_hours)"
+                      }
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "type_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_type",
+                "query": {
+                  "datasetName": "03dc0e15",
+                  "fields": [
+                    {
+                      "name": "type",
+                      "expression": "`type`"
+                    },
+                    {
+                      "name": "type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Content Type"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "type",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_type"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "completion_rate_by_genre",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "titles__primary_genre",
+                      "expression": "`titles`.`primary_genre`"
+                    },
+                    {
+                      "name": "measure(watch_history__avg_completion_pct)",
+                      "expression": "MEASURE(`watch_history`.`avg_completion_pct`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "MEASURE(`watch_history`.`avg_completion_pct`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Completion Rate by Genre",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "titles__primary_genre",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure-reversed",
+                      "measure": {
+                        "fieldName": "measure(watch_history__avg_completion_pct)"
+                      }
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(watch_history__avg_completion_pct)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 10,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "date_range_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0ecd61b63ad0bc2f73691bff4_watch_date",
+                "query": {
+                  "datasetName": "8573cdbb",
+                  "fields": [
+                    {
+                      "name": "watch_date",
+                      "expression": "`watch_date`"
+                    },
+                    {
+                      "name": "watch_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Watch Date"
+              },
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "watch_date",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0ecd61b63ad0bc2f73691bff4_watch_date"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "content_insights",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Key Insights\n",
+                "\n",
+                "**Drama leads watch hours.** Drama (451K hrs), Comedy (386K), and Action (357K) together account for ~41% of all watch hours across 16 genres. \"Gilded Throne\" is the standout title with 34.3K hours — 56% more than the second-ranked title.\n",
+                "\n",
+                "**Completion rates are remarkably uniform.** All genres fall within a narrow 64.5–66.7% band. Lower-volume genres like Musical (66.7%) and Stand-Up (66.3%) edge out high-volume Drama (64.9%) and Action (64.6%), suggesting that niche content retains viewers slightly better despite fewer total hours."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 12,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "page_title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Content Performance"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "ce96ea67",
+      "displayName": "Subscriber Insights",
+      "layout": [
+        {
+          "widget": {
+            "name": "page_title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Subscriber Insights"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "country_map",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(subscribers__count)",
+                      "expression": "MEASURE(`subscribers`.`count`)"
+                    },
+                    {
+                      "name": "subscribers__country",
+                      "expression": "`subscribers`.`country`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Subscribers by Country"
+              },
+              "version": 1,
+              "widgetType": "choropleth-map",
+              "encodings": {
+                "color": {
+                  "fieldName": "measure(subscribers__count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "region": {
+                  "regionType": "mapbox-v4-admin",
+                  "admin0": {
+                    "fieldName": "subscribers__country",
+                    "type": "field",
+                    "geographicRole": "admin0-name"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 5,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "region_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_region",
+                "query": {
+                  "datasetName": "1585467c",
+                  "fields": [
+                    {
+                      "name": "region",
+                      "expression": "`region`"
+                    },
+                    {
+                      "name": "region_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Region"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "region",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_region"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "plan_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_plan_type",
+                "query": {
+                  "datasetName": "1585467c",
+                  "fields": [
+                    {
+                      "name": "plan_type",
+                      "expression": "`plan_type`"
+                    },
+                    {
+                      "name": "plan_type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Plan Type"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "plan_type",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_plan_type"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "gender_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_gender",
+                "query": {
+                  "datasetName": "1585467c",
+                  "fields": [
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    },
+                    {
+                      "name": "gender_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Gender"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "gender",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_gender"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 2,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "plan_breakdown",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(subscribers__count)",
+                      "expression": "MEASURE(`subscribers`.`count`)"
+                    },
+                    {
+                      "name": "subscribers__plan_type",
+                      "expression": "`subscribers`.`plan_type`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Plan Type Breakdown"
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "measure(subscribers__count)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "count"
+                },
+                "color": {
+                  "fieldName": "subscribers__plan_type",
+                  "displayName": "plan_type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "new_subscribers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "monthly(subscribers__signup_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `subscribers`.`signup_date`)"
+                    },
+                    {
+                      "name": "measure(subscribers__count)",
+                      "expression": "MEASURE(`subscribers`.`count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "New Subscribers per Month"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(subscribers__signup_date)",
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(subscribers__count)",
+                  "displayName": "count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 12,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "subscriber_insights",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Key Insights\n",
+                "\n",
+                "**Standard plan leads with balanced distribution.** Standard (5,915) is the most popular plan, followed by Basic with Ads (4,324) and Premium (4,275). The near-even split suggests healthy tier adoption, with potential to upsell Basic subscribers to Premium.\n",
+                "\n",
+                "**Subscriber base is geographically concentrated.** The US (3,661) alone accounts for 25% of all subscribers, and the top 10 countries represent ~82% of the total. New signups have grown steadily from ~90/month in 2019 to ~230/month in early 2026, reflecting sustained acquisition momentum."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 12,
+            "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "156f0fa8",
+      "displayName": "Experience",
+      "layout": [
+        {
+          "widget": {
+            "name": "page_title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Experience"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "region_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_region",
+                "query": {
+                  "datasetName": "1585467c",
+                  "fields": [
+                    {
+                      "name": "region",
+                      "expression": "`region`"
+                    },
+                    {
+                      "name": "region_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Region"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "region",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0b69e1006b72800aec2b83015_region"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "type_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_type",
+                "query": {
+                  "datasetName": "03dc0e15",
+                  "fields": [
+                    {
+                      "name": "type",
+                      "expression": "`type`"
+                    },
+                    {
+                      "name": "type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Content Type"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "type",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_type"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "device_breakdown",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(watch_history__count)",
+                      "expression": "MEASURE(`watch_history`.`count`)"
+                    },
+                    {
+                      "name": "watch_history__device",
+                      "expression": "`watch_history`.`device`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Device Breakdown"
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "measure(watch_history__count)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "count"
+                },
+                "color": {
+                  "fieldName": "watch_history__device",
+                  "displayName": "device",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "review_sentiment",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(reviews__count)",
+                      "expression": "MEASURE(`reviews`.`count`)"
+                    },
+                    {
+                      "name": "reviews__sentiment",
+                      "expression": "`reviews`.`sentiment`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Review Sentiment"
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "measure(reviews__count)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "count"
+                },
+                "color": {
+                  "fieldName": "reviews__sentiment",
+                  "displayName": "sentiment",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 5,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "rating_distribution",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "ratings__rating",
+                      "expression": "`ratings`.`rating`"
+                    },
+                    {
+                      "name": "measure(ratings__count)",
+                      "expression": "MEASURE(`ratings`.`count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Rating Distribution"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "ratings__rating",
+                  "displayName": "rating",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(ratings__count)",
+                  "displayName": "count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "ratings__rating",
+                  "displayName": "rating",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 12,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "experience_insights",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Key Insights\n",
+                "\n",
+                "**Smart TV and Mobile dominate viewing.** Smart TV (213K sessions, 34%) and Mobile (169K, 27%) together account for 61% of all watch sessions, signaling that large-screen and on-the-go experiences drive the most engagement.\n",
+                "\n",
+                "**Subscriber sentiment is strongly positive.** 68% of reviews are positive vs. only 11% negative. Ratings skew high — 4-star is the most common (37%), and 87% of all ratings are 3 stars or above, with just 1.4% giving a 1-star rating."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 12,
+            "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "811b531b",
+      "displayName": "Catalogue & Investment",
+      "layout": [
+        {
+          "widget": {
+            "name": "page_title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Catalogue & Investment"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "genre_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_primary_genre",
+                "query": {
+                  "datasetName": "03dc0e15",
+                  "fields": [
+                    {
+                      "name": "primary_genre",
+                      "expression": "`primary_genre`"
+                    },
+                    {
+                      "name": "primary_genre_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Genre"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "primary_genre",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_primary_genre"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "type_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_type",
+                "query": {
+                  "datasetName": "03dc0e15",
+                  "fields": [
+                    {
+                      "name": "type",
+                      "expression": "`type`"
+                    },
+                    {
+                      "name": "type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Content Type"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "type",
+                    "queryName": "dashboards/01f1c9ef245a1e52a472131680a5fe8e/datasets/01f1c9f0c69f119f908228bae6f77287_type"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "original_vs_licensed",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(titles__count)",
+                      "expression": "MEASURE(`titles`.`count`)"
+                    },
+                    {
+                      "name": "titles__is_original",
+                      "expression": "`titles`.`is_original`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Original vs Licensed"
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "measure(titles__count)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "count"
+                },
+                "color": {
+                  "fieldName": "titles__is_original",
+                  "displayName": "is_original",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "cat_invest_insights",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Key Insights\n",
+                "\n",
+                "**Licensed content dominates the catalog.** Licensed titles (7,034) outnumber originals (1,966) by 3.6x, reflecting heavy reliance on third-party content. The 78/22 licensed-to-original split suggests room to grow original content for platform differentiation.\n",
+                "\n",
+                "**Animation delivers the best content ROI.** Animation leads in watch hours per $1K of license spend (0.21), 60% higher than Horror (0.13). With 5,640 licenses facing upcoming expiry, prioritizing renewal of high-ROI genres like Animation and Kids & Family will maximize audience engagement per dollar invested."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "roi_by_genre",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "titles__primary_genre",
+                      "expression": "`titles`.`primary_genre`"
+                    },
+                    {
+                      "name": "measure(titles__watch_hours_per_1k_spend)",
+                      "expression": "MEASURE(`titles`.`watch_hours_per_1k_spend`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "MEASURE(`titles`.`watch_hours_per_1k_spend`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Watch Hours per $1K Spend by Genre"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "titles__primary_genre",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure-reversed",
+                      "measure": {
+                        "fieldName": "measure(titles__watch_hours_per_1k_spend)"
+                      }
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(titles__watch_hours_per_1k_spend)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 5,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "upcoming_expires",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "titles__title_name",
+                      "expression": "`titles`.`title_name`"
+                    },
+                    {
+                      "name": "titles__license_expiry",
+                      "expression": "`titles`.`license_expiry`"
+                    },
+                    {
+                      "name": "titles__primary_genre",
+                      "expression": "`titles`.`primary_genre`"
+                    },
+                    {
+                      "name": "titles__license_cost_usd",
+                      "expression": "`titles`.`license_cost_usd`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`titles`.`license_expiry` >= current_date()"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Upcoming License Expires"
+              },
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "titles__title_name",
+                    "headerAlignment": "left",
+                    "useForSearch": true
+                  },
+                  {
+                    "fieldName": "titles__license_expiry",
+                    "headerAlignment": "left"
+                  },
+                  {
+                    "fieldName": "titles__primary_genre",
+                    "headerAlignment": "left"
+                  },
+                  {
+                    "fieldName": "titles__license_cost_usd",
+                    "headerAlignment": "right"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 12,
+            "height": 5
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#FAFAFB",
+        "dark": "#1F272D"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FFFFFF",
+        "dark": "#11171C"
+      },
+      "fontColor": {
+        "light": "#11171C",
+        "dark": "#E8ECF0"
+      },
+      "selectionColor": {
+        "light": "#2272B4",
+        "dark": "#FF8AE7"
+      },
+      "widgetHeaderAlignment": "LEFT"
+    },
+    "applyModeEnabled": false
+  }
+}
